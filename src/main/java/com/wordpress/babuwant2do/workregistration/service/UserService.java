@@ -1,0 +1,38 @@
+package com.wordpress.babuwant2do.workregistration.service;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.wordpress.babuwant2do.workregistration.domain.User;
+import com.wordpress.babuwant2do.workregistration.repository.UserRepository;
+
+@Service
+public class UserService {
+	
+	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	
+	public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository){
+		this.passwordEncoder = passwordEncoder;
+		this.userRepository = userRepository;
+	}
+	
+	public User createUser(String login, String password, 
+			String firstName, String lastName, String email ) {
+
+	        User newUser = new User();
+	        String encryptedPassword = passwordEncoder.encode(password);
+	        
+	        newUser.setLogin(login);
+	        newUser.setPassword(encryptedPassword);
+	        newUser.setFirstName(firstName);
+	        newUser.setLastName(lastName);
+	        newUser.setEmail(email);
+//	        newUser.setActivated(true);
+	        	        
+	        userRepository.save(newUser);
+	        return newUser;
+	    }
+
+	
+}

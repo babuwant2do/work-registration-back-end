@@ -12,4 +12,10 @@ public class UserResource {
 	public String getMessage(){
 		return "Hello User";
 	}
+	
+	@GetMapping("/secured")
+	public String getSecuredMessage(){
+		return "Hello Secured User";
+	}
+	 
 }
