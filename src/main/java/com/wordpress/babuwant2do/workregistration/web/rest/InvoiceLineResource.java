@@ -1,12 +1,13 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
-import com.wordpress.babuwant2do.workregistration.service.InvoiceLineService;
-import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
-import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.apache.tomcat.util.http.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,14 +15,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
+import com.wordpress.babuwant2do.workregistration.domain.Client;
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
+import com.wordpress.babuwant2do.workregistration.service.InvoiceLineService;
+import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
+import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
 
 /**
  * REST controller for managing InvoiceLine.
@@ -48,7 +55,6 @@ public class InvoiceLineResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/invoice-lines")
-    @Timed
     public ResponseEntity<InvoiceLine> createInvoiceLine(@Valid @RequestBody InvoiceLine invoiceLine) throws URISyntaxException {
         log.debug("REST request to save InvoiceLine : {}", invoiceLine);
         if (invoiceLine.getId() != null) {
@@ -70,7 +76,6 @@ public class InvoiceLineResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/invoice-lines")
-    @Timed
     public ResponseEntity<InvoiceLine> updateInvoiceLine(@Valid @RequestBody InvoiceLine invoiceLine) throws URISyntaxException {
         log.debug("REST request to update InvoiceLine : {}", invoiceLine);
         if (invoiceLine.getId() == null) {
@@ -89,12 +94,11 @@ public class InvoiceLineResource {
      * @return the ResponseEntity with status 200 (OK) and the list of invoiceLines in body
      */
     @GetMapping("/invoice-lines")
-    @Timed
-    public ResponseEntity<List<InvoiceLine>> getAllInvoiceLines(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<InvoiceLine>> getAllInvoiceLines() {
         log.debug("REST request to get a page of InvoiceLines");
-        Page<InvoiceLine> page = invoiceLineService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoice-lines");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        List<InvoiceLine> page = invoiceLineService.findAll();
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoice-lines");
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
     /**
@@ -104,11 +108,15 @@ public class InvoiceLineResource {
      * @return the ResponseEntity with status 200 (OK) and with body the invoiceLine, or with status 404 (Not Found)
      */
     @GetMapping("/invoice-lines/{id}")
-    @Timed
     public ResponseEntity<InvoiceLine> getInvoiceLine(@PathVariable Long id) {
         log.debug("REST request to get InvoiceLine : {}", id);
         InvoiceLine invoiceLine = invoiceLineService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoiceLine));
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoiceLine));
+        if(invoiceLine != null){
+        	return new ResponseEntity<InvoiceLine>(invoiceLine, HttpStatus.OK);        	
+        }
+        return new ResponseEntity<InvoiceLine>(invoiceLine, HttpStatus.NOT_FOUND);        	
+        
     }
 
     /**
@@ -118,7 +126,6 @@ public class InvoiceLineResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/invoice-lines/{id}")
-    @Timed
     public ResponseEntity<Void> deleteInvoiceLine(@PathVariable Long id) {
         log.debug("REST request to delete InvoiceLine : {}", id);
         invoiceLineService.delete(id);

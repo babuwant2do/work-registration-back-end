@@ -1,13 +1,6 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.Invoice;
-import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
-import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
-import com.wordpress.babuwant2do.workregistration.domain.Project;
-import com.wordpress.babuwant2do.workregistration.domain.enumeration.InvoiceStatusEnum;
-import com.wordpress.babuwant2do.workregistration.domain.enumeration.TaskStatusEnum;
-import com.wordpress.babuwant2do.workregistration.repository.InvoiceRepository;
-import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
+
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.Invoice;
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
+import com.wordpress.babuwant2do.workregistration.domain.Project;
+import com.wordpress.babuwant2do.workregistration.domain.enumeration.InvoiceStatusEnum;
+import com.wordpress.babuwant2do.workregistration.domain.enumeration.TaskStatusEnum;
+import com.wordpress.babuwant2do.workregistration.repository.InvoiceRepository;
+import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
 
 
 /**
@@ -59,6 +61,11 @@ public class InvoiceService {
         log.debug("Request to get all Invoices");
         return invoiceRepository.findAll(pageable);
     }
+    @Transactional(readOnly = true)
+    public List<Invoice> findAll() {
+    	log.debug("Request to get all Invoices");
+    	return invoiceRepository.findAll();
+    }
 
     /**
      *  Get one invoice by id.
@@ -69,7 +76,8 @@ public class InvoiceService {
     @Transactional(readOnly = true)
     public Invoice findOne(Long id) {
         log.debug("Request to get Invoice : {}", id);
-        return invoiceRepository.getOne(id);
+//        return invoiceRepository.getOne(id);
+        return invoiceRepository.findById(id).orElse(null);
     }
 
     /**

@@ -1,12 +1,10 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+import com.wordpress.babuwant2do.workregistration.domain.Client;
 import com.wordpress.babuwant2do.workregistration.domain.Invoice;
 import com.wordpress.babuwant2do.workregistration.service.InvoiceService;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -48,7 +46,6 @@ public class InvoiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/invoices")
-    @Timed
     public ResponseEntity<Invoice> createInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to save Invoice : {}", invoice);
         if (invoice.getId() != null) {
@@ -70,7 +67,6 @@ public class InvoiceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/invoices")
-    @Timed
     public ResponseEntity<Invoice> updateInvoice(@Valid @RequestBody Invoice invoice) throws URISyntaxException {
         log.debug("REST request to update Invoice : {}", invoice);
         if (invoice.getId() == null) {
@@ -89,12 +85,11 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK) and the list of invoices in body
      */
     @GetMapping("/invoices")
-    @Timed
-    public ResponseEntity<List<Invoice>> getAllInvoices(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Invoice>> getAllInvoices() {
         log.debug("REST request to get a page of Invoices");
-        Page<Invoice> page = invoiceService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoices");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        List<Invoice> page = invoiceService.findAll();
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoices");
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
     /**
@@ -104,11 +99,15 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK) and with body the invoice, or with status 404 (Not Found)
      */
     @GetMapping("/invoices/{id}")
-    @Timed
     public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
         log.debug("REST request to get Invoice : {}", id);
         Invoice invoice = invoiceService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoice));
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoice));
+        if(invoice != null){
+        	return new ResponseEntity<Invoice>(invoice, HttpStatus.OK);        	
+        }
+        return new ResponseEntity<Invoice>(invoice, HttpStatus.NOT_FOUND);        	
+        
     }
 
     /**
@@ -118,7 +117,6 @@ public class InvoiceResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/invoices/{id}")
-    @Timed
     public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
         log.debug("REST request to delete Invoice : {}", id);
         invoiceService.delete(id);

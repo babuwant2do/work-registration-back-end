@@ -1,9 +1,8 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.Client;
-import com.wordpress.babuwant2do.workregistration.repository.ClientRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.Client;
+import com.wordpress.babuwant2do.workregistration.repository.ClientRepository;
 
 
 /**
@@ -64,7 +66,9 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client findOne(Long id) {
         log.debug("Request to get Client : {}", id);
-        return clientRepository.findById(id).orElseGet(null);
+//        Optional<Client> client = clientRepository.findById(id);
+//        if(client.isPresent()) return client.orElse(null);
+        return clientRepository.findById(id).orElse(null);
     }
 
     /**

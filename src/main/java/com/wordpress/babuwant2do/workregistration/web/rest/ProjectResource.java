@@ -1,13 +1,11 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+import com.wordpress.babuwant2do.workregistration.domain.Invoice;
 import com.wordpress.babuwant2do.workregistration.domain.Project;
 import com.wordpress.babuwant2do.workregistration.service.InvoiceService;
 import com.wordpress.babuwant2do.workregistration.service.ProjectService;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,7 +49,6 @@ public class ProjectResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/projects")
-    @Timed
     public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) throws URISyntaxException {
         log.debug("REST request to save Project : {}", project);
         if (project.getId() != null) {
@@ -73,7 +70,6 @@ public class ProjectResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/projects")
-    @Timed
     public ResponseEntity<Project> updateProject(@Valid @RequestBody Project project) throws URISyntaxException {
         log.debug("REST request to update Project : {}", project);
         if (project.getId() == null) {
@@ -92,12 +88,13 @@ public class ProjectResource {
      * @return the ResponseEntity with status 200 (OK) and the list of projects in body
      */
     @GetMapping("/projects")
-    @Timed
-    public ResponseEntity<List<Project>> getAllProjects(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Project>> getAllProjects() {
         log.debug("REST request to get a page of Projects");
-        Page<Project> page = projectService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        List<Project> page = projectService.findAll();
+//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/projects");
+//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
     /**
@@ -107,12 +104,15 @@ public class ProjectResource {
      * @return the ResponseEntity with status 200 (OK) and with body the project, or with status 404 (Not Found)
      */
     @GetMapping("/projects/{id}")
-    @Timed
     public ResponseEntity<Project> getProject(@PathVariable Long id) {
         log.debug("REST request to get Project : {}", id);
         Project project = projectService.findOne(id);
         this.invoiceService.createInvoice(project);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(project));
+        if(project != null){
+        	return new ResponseEntity<Project>(project, HttpStatus.OK);        	
+        }
+        return new ResponseEntity<Project>(project, HttpStatus.NOT_FOUND);        	
     }
 
     /**
@@ -122,7 +122,6 @@ public class ProjectResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/projects/{id}")
-    @Timed
     public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
         log.debug("REST request to delete Project : {}", id);
         projectService.delete(id);

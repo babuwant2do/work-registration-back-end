@@ -1,13 +1,16 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.Resource;
-import com.wordpress.babuwant2do.workregistration.repository.ResourceRepository;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.Resource;
+import com.wordpress.babuwant2do.workregistration.repository.ResourceRepository;
 
 
 /**
@@ -46,6 +49,12 @@ public class ResourceService {
         log.debug("Request to get all Resources");
         return resourceRepository.findAll(pageable);
     }
+    
+    @Transactional(readOnly = true)
+    public List<Resource> findAll() {
+    	log.debug("Request to get all Resources");
+    	return resourceRepository.findAll();
+    }
 
     /**
      *  Get one resource by id.
@@ -56,7 +65,7 @@ public class ResourceService {
     @Transactional(readOnly = true)
     public Resource findOne(Long id) {
         log.debug("Request to get Resource : {}", id);
-        return resourceRepository.getOne(id);
+        return resourceRepository.findById(id).orElse(null);
     }
 
     /**

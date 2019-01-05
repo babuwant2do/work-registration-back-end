@@ -1,13 +1,16 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
-import com.wordpress.babuwant2do.workregistration.repository.InvoiceLineRepository;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
+import com.wordpress.babuwant2do.workregistration.repository.InvoiceLineRepository;
 
 
 /**
@@ -46,6 +49,12 @@ public class InvoiceLineService {
         log.debug("Request to get all InvoiceLines");
         return invoiceLineRepository.findAll(pageable);
     }
+    
+    @Transactional(readOnly = true)
+    public List<InvoiceLine> findAll() {
+    	log.debug("Request to get all InvoiceLines");
+    	return invoiceLineRepository.findAll();
+    }
 
     /**
      *  Get one invoiceLine by id.
@@ -56,7 +65,8 @@ public class InvoiceLineService {
     @Transactional(readOnly = true)
     public InvoiceLine findOne(Long id) {
         log.debug("Request to get InvoiceLine : {}", id);
-        return invoiceLineRepository.getOne(id);
+//        return invoiceLineRepository.getOne(id);
+        return invoiceLineRepository.findById(id).orElse(null);
     }
 
     /**

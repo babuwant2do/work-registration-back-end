@@ -1,8 +1,5 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.Task;
-import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
-import com.wordpress.babuwant2do.workregistration.repository.TaskRepository;
 
 import java.util.List;
 
@@ -12,6 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.Task;
+import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
+import com.wordpress.babuwant2do.workregistration.repository.TaskRepository;
 
 
 /**
@@ -54,6 +55,12 @@ public class TaskService {
         log.debug("Request to get all Tasks");
         return taskRepository.findAll(pageable);
     }
+    
+    @Transactional(readOnly = true)
+    public List<Task> findAll() {
+    	log.debug("Request to get all Tasks");
+    	return taskRepository.findAll();
+    }
 
     /**
      *  Get one task by id.
@@ -64,10 +71,10 @@ public class TaskService {
     @Transactional(readOnly = true)
     public Task findOne(Long id) {
         log.debug("Request to get Task : {}", id);
-//        return taskRepository.findOneWithEagerRelationships(id);
-        Task task = taskRepository.findOneWithEagerRelationships(id);
-        this.findByProject(task.getProject().getId());
-        return task;
+        return taskRepository.findOneWithEagerRelationships(id);
+//        Task task = taskRepository.findOneWithEagerRelationships(id);
+//        this.findByProject(task.getProject().getId());
+//        return task;
     }
 
     /**

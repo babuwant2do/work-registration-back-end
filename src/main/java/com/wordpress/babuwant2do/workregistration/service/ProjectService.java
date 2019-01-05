@@ -1,11 +1,5 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
-import com.wordpress.babuwant2do.workregistration.domain.Invoice;
-import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
-import com.wordpress.babuwant2do.workregistration.domain.Project;
-import com.wordpress.babuwant2do.workregistration.domain.enumeration.TaskStatusEnum;
-import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
-import com.wordpress.babuwant2do.workregistration.repository.ProjectRepository;
 
 import java.util.List;
 
@@ -17,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.wordpress.babuwant2do.workregistration.domain.Project;
+import com.wordpress.babuwant2do.workregistration.repository.ProjectRepository;
 
 
 /**
@@ -57,6 +54,12 @@ public class ProjectService {
         log.debug("Request to get all Projects");
         return projectRepository.findAll(pageable);
     }
+    
+    @Transactional(readOnly = true)
+    public List<Project> findAll() {
+    	log.debug("Request to get all Projects");
+    	return projectRepository.findAll();
+    }
 
     /**
      *  Get one project by id.
@@ -68,12 +71,13 @@ public class ProjectService {
     public Project findOne(Long id) {
         log.debug("Request to get Project : {}", id);
 //        return projectRepository.findOne(id);
+        return projectRepository.findById(id).orElse(null);
         
         //TODO: undo change
-        Project project =  projectRepository.getOne(id);
-        this.getProjectByLogin(project.getOwner().getLogin());
-        
-        return project;
+//        Project project =  projectRepository.getOne(id);
+//        this.getProjectByLogin(project.getOwner().getLogin());
+//        
+//        return project;
     }
 
     /**
