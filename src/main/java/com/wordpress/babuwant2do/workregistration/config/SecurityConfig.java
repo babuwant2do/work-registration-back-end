@@ -3,10 +3,8 @@ package com.wordpress.babuwant2do.workregistration.config;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -68,29 +66,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //@formatter:off
         http
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .authorizeRequests()
+                .antMatchers("/api/register/**").permitAll()
                 .antMatchers("/api/register").permitAll()
                 .antMatchers("/api/auth/signin").permitAll()
                 .antMatchers("/api/users/message").permitAll()
-                .antMatchers("/api/clients/**").permitAll()
-//                .antMatchers(HttpMethod.DELETE, "/vehicles/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.GET, "/v1/vehicles/**").permitAll()
                 .anyRequest().authenticated()
             .and()
-            .apply(new JwtConfigurer(jwtTokenProvider));
-        //@formatter:on
+            .apply(new JwtConfigurer(jwtTokenProvider))
+            ;
     }
     
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

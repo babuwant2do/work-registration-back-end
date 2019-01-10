@@ -10,7 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
 import com.wordpress.babuwant2do.workregistration.domain.Task;
+import com.wordpress.babuwant2do.workregistration.domain.enumeration.TaskStatusEnum;
 import com.wordpress.babuwant2do.workregistration.repository.InvoiceableTaskRepository;
 import com.wordpress.babuwant2do.workregistration.repository.TaskRepository;
 
@@ -72,9 +74,6 @@ public class TaskService {
     public Task findOne(Long id) {
         log.debug("Request to get Task : {}", id);
         return taskRepository.findOneWithEagerRelationships(id);
-//        Task task = taskRepository.findOneWithEagerRelationships(id);
-//        this.findByProject(task.getProject().getId());
-//        return task;
     }
 
     /**
@@ -87,6 +86,11 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
     
+    public List<InvoiceableTask> findAllById(List<Long> ids) {
+    	log.debug("Request to get all Tasks by IDS {}", ids);
+    	return this.invoiceableTaskRepository.findAllById(ids);
+    }
+    
     /**
      * return invoiceable Task List 
      * @param projectId
@@ -94,6 +98,15 @@ public class TaskService {
      */
     public List<? extends Task> getInvoiceableTaskList(Long projectId){
     	return this.invoiceableTaskRepository.findByProjectIdWithEagerRelationships(projectId);
+    }
+    
+    /**
+     * get all the invoiceavle task status with Finished: ready for invoice
+     * @param projectId
+     * @return
+     */
+    public List<InvoiceableTask> getElegibleInvoiceableByProject(Long projectId){
+    	return  this.invoiceableTaskRepository.findByProjectIdAndStatus(projectId, TaskStatusEnum.FINISHED);
     }
     
     public List<Task> findByProject(Long projectId){

@@ -77,4 +77,15 @@ public class ResourceService {
         log.debug("Request to delete Resource : {}", id);
         resourceRepository.deleteById(id);
     }
+    
+    /**
+     * Find all resource belongs to Task.
+     * 
+     * @param taskId
+     * @return
+     */
+    public List<Resource> findByTaskId(Long taskId){
+    	return this.resourceRepository.findByTaskId(taskId);
+    	
+    }
 }

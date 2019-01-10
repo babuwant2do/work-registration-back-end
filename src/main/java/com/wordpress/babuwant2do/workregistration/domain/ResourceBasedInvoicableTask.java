@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -21,7 +22,7 @@ public class ResourceBasedInvoicableTask extends InvoiceableTask{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@OneToMany(mappedBy = "task")
+	@OneToMany(mappedBy = "task", cascade=CascadeType.REMOVE)
     @JsonIgnore
     private List<Resource> resources = new ArrayList<>();
 

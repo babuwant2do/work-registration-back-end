@@ -96,21 +96,54 @@ public class InvoiceService {
         invoiceRepository.deleteById(id);
     }
     
+//    @Transactional(readOnly = true)
+    public Invoice findOneWithInvoiceLines(Long id) {
+    	log.debug("Request to get Invoice : {}", id);
+        Invoice invoice = invoiceRepository.getOne(id);        
+        return invoice;
+    }
+    
+    public List<Invoice> findByProject(Long projectId){
+    	return  this.invoiceRepository.findByProjectId(projectId);    	
+    }
+    
     //TODO: Refactor this method
-    public Invoice createInvoice(Project project){
+    /**
+     * create invoice for the project automatically taking all the task with finished status.
+     * @param project
+     * @return
+     */
+    public Invoice createInvoice(Project project) throws Exception{
     	log.debug("Request to get Create Invoice By   Project : {}", project.getId());
-    	List<InvoiceableTask> task = this.invoiceableTaskRepository.findByProjectIdAndStatusWithEagerRelationships(project.getId(), TaskStatusEnum.FINISHED);
+    	if(project.getId() != null){
+    		List<InvoiceableTask> task = this.invoiceableTaskRepository.findByProjectIdAndStatusWithEagerRelationships(project.getId(), TaskStatusEnum.FINISHED);    		
+    		return this.createInvoice(project, task, true);
+    	}
+    	return null;
+    }
+    
+    public Invoice createInvoice(Project project, List<InvoiceableTask> task, boolean isSkipException ) throws Exception{
+    	log.debug("[CREATE_INVOICE] Request to get Create Invoice By   Project : {} and Task: {}", project.getId(), task);
     	if(task != null && !task.isEmpty()){
     		Invoice invoice = this.prepareNewInvoceProject(project);
     		for (InvoiceableTask invoiceableTask : task) {
-    			this.log.info("ProjectID: {}, Task ID: {} , Task Name: {}", invoiceableTask.getProject().getId(), invoiceableTask.getId(), invoiceableTask.getName());
-    			List<InvoiceLine> taskInvoiceLIne = invoiceableTask.getInvoiceLineAsList();
-    			for (InvoiceLine invoiceLine : taskInvoiceLIne) {
-					this.log.warn("type: {}, price: {}, totPrice: {}", invoiceLine.getUniteType(), invoiceLine.getUnitPrice(), invoiceLine.getTotalPrice());
-					invoiceLine.setInvoice(invoice);
-				}
-    			invoice.getInvoiceLines().addAll(taskInvoiceLIne);
-    			invoice.addTask(invoiceableTask);
+    			this.log.debug("[CREATE_INVOICE] ProjectID: {}, Task ID: {} , Task Name: {}", invoiceableTask.getProject().getId(), invoiceableTask.getId(), invoiceableTask.getName());
+    			if(invoiceableTask.getStatus() == TaskStatusEnum.FINISHED && invoiceableTask.getProject().getId() == project.getId()){
+    				List<InvoiceLine> taskInvoiceLIne = invoiceableTask.getInvoiceLineAsList();
+    				for (InvoiceLine invoiceLine : taskInvoiceLIne) {
+    					this.log.debug("[CREATE_INVOICE] type: {}, price: {}, totPrice: {}", invoiceLine.getUniteType(), invoiceLine.getUnitPrice(), invoiceLine.getTotalPrice());
+    					invoiceLine.setInvoice(invoice);
+    				}
+    				invoice.getInvoiceLines().addAll(taskInvoiceLIne);
+    				invoice.addTask(invoiceableTask);    				
+    			}else if(!isSkipException){
+    				this.log.error("Task {} with status {} can not be Invoiced",invoiceableTask, invoiceableTask.getStatus() );
+    				//TODO: Should throw customized Exception
+    				throw new Exception(String.format("Task { [%l]: %s}  with status %s  can not be Invoiced with and project id: %l"
+    						,invoiceableTask.getId(), invoiceableTask.getName(), invoiceableTask.getStatus(), project.getId()));
+    			}else{
+    				this.log.warn("Task {} with status {} with and project id: {} is ignored ",invoiceableTask, invoiceableTask.getStatus(), project.getId() );    				
+    			}
     		}
     		return this.save(invoice);
     	}

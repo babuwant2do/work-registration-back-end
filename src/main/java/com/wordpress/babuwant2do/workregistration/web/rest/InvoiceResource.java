@@ -1,25 +1,28 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
-import com.wordpress.babuwant2do.workregistration.domain.Client;
 import com.wordpress.babuwant2do.workregistration.domain.Invoice;
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
+import com.wordpress.babuwant2do.workregistration.domain.Project;
+import com.wordpress.babuwant2do.workregistration.service.InvoiceLineService;
 import com.wordpress.babuwant2do.workregistration.service.InvoiceService;
+import com.wordpress.babuwant2do.workregistration.service.ProjectService;
+import com.wordpress.babuwant2do.workregistration.service.TaskService;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
-import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Invoice.
@@ -33,9 +36,19 @@ public class InvoiceResource {
     private static final String ENTITY_NAME = "invoice";
 
     private final InvoiceService invoiceService;
+    
+    private final InvoiceLineService invoiceLineService;
+    
+    private final ProjectService projectService;
+    
+    private final TaskService taskService;
 
-    public InvoiceResource(InvoiceService invoiceService) {
+    public InvoiceResource(InvoiceService invoiceService, ProjectService projectService
+    		, TaskService taskService, InvoiceLineService invoiceLineService) {
         this.invoiceService = invoiceService;
+        this.projectService = projectService;
+        this.taskService = taskService;
+        this.invoiceLineService = invoiceLineService;
     }
 
     /**
@@ -56,6 +69,8 @@ public class InvoiceResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
+    
+    
 
     /**
      * PUT  /invoices : Updates an existing invoice.
@@ -88,7 +103,6 @@ public class InvoiceResource {
     public ResponseEntity<List<Invoice>> getAllInvoices() {
         log.debug("REST request to get a page of Invoices");
         List<Invoice> page = invoiceService.findAll();
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoices");
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
@@ -102,14 +116,19 @@ public class InvoiceResource {
     public ResponseEntity<Invoice> getInvoice(@PathVariable Long id) {
         log.debug("REST request to get Invoice : {}", id);
         Invoice invoice = invoiceService.findOne(id);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoice));
         if(invoice != null){
         	return new ResponseEntity<Invoice>(invoice, HttpStatus.OK);        	
         }
         return new ResponseEntity<Invoice>(invoice, HttpStatus.NOT_FOUND);        	
         
     }
-
+    
+    @GetMapping("/invoices/{id}/lines")
+    public ResponseEntity<List<InvoiceLine>> getAllInvoiceLines(@PathVariable Long id) {
+        log.debug("REST request to get a page of InvoiceLines");
+        List<InvoiceLine> page = invoiceLineService.findAllBiInvoiceId(id);
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
     /**
      * DELETE  /invoices/:id : delete the "id" invoice.
      *
@@ -121,5 +140,58 @@ public class InvoiceResource {
         log.debug("REST request to delete Invoice : {}", id);
         invoiceService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    @GetMapping("/invoices/by-project-id/{projectId}")
+    public ResponseEntity<List<Invoice>> getAllInvoicesByProjectId(@PathVariable Long projectId) {
+        log.debug("REST request to get a page of Invoices");
+        List<Invoice> page = invoiceService.findByProject(projectId);
+        return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
+    
+    
+    @GetMapping("/invoices/create-by-project-id/{projectId}")
+    public ResponseEntity<Invoice> createInvoiceByProjectId(@PathVariable Long projectId) {
+        log.debug("REST request to get Invoice : {}", projectId);
+        Invoice invoice = null;
+        Project project = this.projectService.findOne(projectId);
+    	if(project != null){
+    		try {
+				invoice = invoiceService.createInvoice(project);
+				if(invoice != null){
+					return new ResponseEntity<Invoice>(invoice, HttpStatus.OK);        	
+				}
+			} catch (Exception e) {
+				return ResponseEntity.badRequest().header("errMsg", e.getMessage()).body(null);
+			}
+    		
+    	}
+        return new ResponseEntity<Invoice>(invoice, HttpStatus.BAD_REQUEST);        	
+        
+    }
+    
+    @PostMapping("/invoices/with-tasks-by-project-id/{projectId}")
+    public ResponseEntity<Invoice> createInvoiceWithTasks(@PathVariable Long projectId, @RequestBody List<Long> selectedTaskIds) throws URISyntaxException {
+    	log.debug("REST request to Create Invoice for project {} with Task IDs: {}", projectId, selectedTaskIds);
+    	
+    	Project project = this.projectService.findOne(projectId);
+    	if(project != null){
+    		List<InvoiceableTask> task = this.taskService.findAllById(selectedTaskIds);
+    		if(task != null){
+    			try {
+					Invoice result = this.invoiceService.createInvoice(project, task, false);
+					if(result != null){
+						return ResponseEntity.created(new URI("/api/invoices/" + result.getId()))
+								.headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+								.body(result);						
+					}
+					
+				} catch (Exception e) {
+					return ResponseEntity.badRequest().header("errMsg", e.getMessage()).body(null);
+				}
+    		}
+    	}
+    	return ResponseEntity.badRequest().body(null);
+    	
     }
 }

@@ -33,6 +33,14 @@ public class UserService {
 	        userRepository.save(newUser);
 	        return newUser;
 	    }
+	
+	public User getUser(Long id){
+		return this.userRepository.findById(id).orElse(null);
+	}
+	
+	public User getUserByLogin(String login){
+		return this.userRepository.findOneByLogin(login).orElse(null);
+	}
 
 	
 }

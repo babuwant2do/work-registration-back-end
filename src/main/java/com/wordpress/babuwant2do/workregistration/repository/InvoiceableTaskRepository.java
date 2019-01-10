@@ -25,8 +25,11 @@ public interface InvoiceableTaskRepository extends JpaRepository<InvoiceableTask
 
     @Query("select task from InvoiceableTask task where task.project.id =:projectId and task.status =:status")
     List<InvoiceableTask> findByProjectIdAndStatusWithEagerRelationships(@Param("projectId") Long projectId, @Param("status") TaskStatusEnum status);
+
+    @Query("select task from InvoiceableTask task where task.project.id =:projectId and task.status =:status")
+    List<InvoiceableTask> findByProjectIdAndStatus(@Param("projectId") Long projectId, @Param("status") TaskStatusEnum status);
     
     @Query("update InvoiceableTask task SET task.invoice.id=null WHERE task.invoice.id=:invoiceId")
     void removeInvoiceRefFromTask(@Param("invoiceId") Long invoiceId);
-
+    
 }

@@ -3,10 +3,12 @@ package com.wordpress.babuwant2do.workregistration.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordpress.babuwant2do.workregistration.domain.enumeration.ProjectStatusEnum;
 
 /**
@@ -17,10 +19,6 @@ import com.wordpress.babuwant2do.workregistration.domain.enumeration.ProjectStat
 public class Project  extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -33,31 +31,30 @@ public class Project  extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ProjectStatusEnum status;
-//
-//    @Column(name = "create_date")
-//    private Instant createDate;
-
     @Column(name = "closed_date")
     private Instant closedDate;
 
     @ManyToOne(optional = false)
-    @NotNull
+//    @NotNull
     private Client client;
 
     @ManyToOne(optional = false)
-    @NotNull
+//    @NotNull
     private User owner;
+    
+    @OneToMany(mappedBy = "project", cascade=CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Task> tasks = new ArrayList<>();
 
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public List<Task> getTasks() {
+		return tasks;
+	}
 
-    public String getName() {
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -95,20 +92,6 @@ public class Project  extends BaseEntity {
     public void setStatus(ProjectStatusEnum status) {
         this.status = status;
     }
-
-//    public Instant getCreateDate() {
-//        return createDate;
-//    }
-//
-//    public Project createDate(Instant createDate) {
-//        this.createDate = createDate;
-//        return this;
-//    }
-//
-//    public void setCreateDate(Instant createDate) {
-//        this.createDate = createDate;
-//    }
-
     public Instant getClosedDate() {
         return closedDate;
     }
@@ -147,8 +130,7 @@ public class Project  extends BaseEntity {
     public void setOwner(User user) {
         this.owner = user;
     }
-    // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {

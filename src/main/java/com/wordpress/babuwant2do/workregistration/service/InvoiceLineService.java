@@ -51,6 +51,12 @@ public class InvoiceLineService {
     }
     
     @Transactional(readOnly = true)
+    public List<InvoiceLine> findAllBiInvoiceId(Long invoiceId) {
+    	log.debug("Request to get all InvoiceLines");
+    	return invoiceLineRepository.findByInvoiceId(invoiceId);
+    }
+    
+    @Transactional(readOnly = true)
     public List<InvoiceLine> findAll() {
     	log.debug("Request to get all InvoiceLines");
     	return invoiceLineRepository.findAll();
