@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "client")
-public class Client extends BaseEntity implements Serializable{ //implements Serializable {
+public class Client extends BaseEntity implements Serializable{ 
 
     private static final long serialVersionUID = 1L;
 
@@ -32,15 +32,6 @@ public class Client extends BaseEntity implements Serializable{ //implements Ser
     @NotNull
     @Column(name = "address", nullable = false)
     private String address;
-
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getName() {
         return name;

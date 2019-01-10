@@ -4,11 +4,8 @@ import com.wordpress.babuwant2do.workregistration.domain.Client;
 import com.wordpress.babuwant2do.workregistration.security.SecurityUtils;
 import com.wordpress.babuwant2do.workregistration.service.ClientService;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
-import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +17,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Client.
@@ -52,8 +48,6 @@ public class ClientResource {
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);
         log.debug("REST request to save Client : {}", client);
         if (client.getId() != null) {
-//        	return new ResponseEntity<>("email address already in use", textPlainHeaders, HttpStatus.BAD_REQUEST)).;
-//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new client cannot already have an ID")).body(null);
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new client cannot already have an ID")).body(null);
         }
         Client result = clientService.save(client);
@@ -94,7 +88,6 @@ public class ClientResource {
         log.debug("REST request to get a page of Clients");
         System.out.println("##### CURRENT LOGGIN USER: "+ SecurityUtils.getCurrentUserLogin() + ", IS LOGGEDIN: "+ SecurityUtils.isAuthenticated());
         List<Client> page = clientService.findAll();
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/clients");
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
@@ -108,7 +101,6 @@ public class ClientResource {
     public ResponseEntity<Client> getClient(@PathVariable Long id) {
         log.debug("REST request to get Client : {}", id);
         Client client = clientService.findOne(id);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(client));
         if(client != null){
         	return new ResponseEntity<Client>(client, HttpStatus.OK);        	
         }

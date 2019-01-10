@@ -1,5 +1,6 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
+import com.wordpress.babuwant2do.workregistration.domain.InvoiceableTask;
 import com.wordpress.babuwant2do.workregistration.domain.Task;
 import com.wordpress.babuwant2do.workregistration.service.TaskService;
 import com.wordpress.babuwant2do.workregistration.web.rest.helper.TaskBuilder;
@@ -30,8 +31,6 @@ public class TaskResource {
     private static final String ENTITY_NAME = "task";
 
     private final TaskService taskService;
-    
-    //TODO: add builder and use in create and update...
     
     private final TaskBuilder taskBuilder;
 
@@ -92,9 +91,21 @@ public class TaskResource {
     public ResponseEntity<List<Task>> getAllTasks() {
         log.debug("REST request to get a page of Tasks");
         List<Task> page = taskService.findAll();
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/tasks");
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
         return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
+    
+    @GetMapping("/tasks/by-project-id/{projectId}")
+    public ResponseEntity<List<Task>> getAllTasksByProjectID(@PathVariable Long projectId) {
+    	log.debug("REST request to get a page of Tasks");
+    	List<Task> page = taskService.findByProject(projectId);
+    	return new ResponseEntity<>(page, null, HttpStatus.OK);
+    }
+    
+    @GetMapping("/tasks/elegibale-for-invoice-by-project-id/{projectId}")
+    public ResponseEntity<List<InvoiceableTask>> getElegibleTasksByProjectID(@PathVariable Long projectId) {
+    	log.debug("REST request to get a page of Tasks");
+    	List<InvoiceableTask> page = taskService.getElegibleInvoiceableByProject(projectId);
+    	return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
     /**
@@ -107,7 +118,6 @@ public class TaskResource {
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
         log.debug("REST request to get Task : {}", id);
         Task task = taskService.findOne(id);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(task));
         if(task != null){
         	return new ResponseEntity<Task>(task, HttpStatus.OK);        	
         }

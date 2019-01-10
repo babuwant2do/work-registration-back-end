@@ -3,6 +3,10 @@ package com.wordpress.babuwant2do.workregistration.web.rest.vm;
 import java.io.Serializable;
 
 public class LoginVM implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String username;
     private String password;
 	public String getUsername() {

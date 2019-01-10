@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordpress.babuwant2do.workregistration.domain.enumeration.UniteTypeEnum;
@@ -23,7 +25,9 @@ public class ContactBasedInvoicableTask extends InvoiceableTask{
 	private Float quantity;
 	@Column
 	private Float price;
-	@Column
+	
+	 @Enumerated(EnumType.STRING)
+	 @Column(name = "unit")
 	private UniteTypeEnum unit;
 	
 	public Float getQuantity() {
@@ -54,6 +58,7 @@ public class ContactBasedInvoicableTask extends InvoiceableTask{
 		invoiceLine.setTaxPercent(1.5f); //TODO: set from property: maybe global property
 		invoiceLine.setQuantity(this.getQuantity());
 		invoiceLine.setUnitPrice(this.getPrice());
+		invoiceLine.setUniteType(UniteTypeEnum.PC);
 		invoiceLine.setTotalPrice(this.caculateTotalPrice(invoiceLine.getUnitPrice(), invoiceLine.getQuantity(), invoiceLine.getTaxPercent()));
 		
 		invoiceLines.add(invoiceLine);

@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,10 +27,6 @@ public abstract class BaseEntity implements Serializable {
 	@CreationTimestamp
 	@Column(name = "create_date")
 	private Instant createDate;
-	
-//	@Version
-//	@Column(name = "version")
-//	private int version;
 	
 	public Long getId() {
         return id;

@@ -3,8 +3,6 @@ package com.wordpress.babuwant2do.workregistration.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.io.Serializable;
-import java.time.Instant;
 import java.util.Objects;
 
 import com.wordpress.babuwant2do.workregistration.domain.enumeration.UniteTypeEnum;
@@ -20,10 +18,6 @@ import com.wordpress.babuwant2do.workregistration.domain.enumeration.UniteTypeEn
 public class Resource  extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
 
 //    @NotNull
     @Column(name = "resource_type", insertable = false, updatable = false)
@@ -45,21 +39,10 @@ public class Resource  extends BaseEntity {
     @Column(name = "unit_type")
     private UniteTypeEnum unitType;
 
-//    @Column(name = "create_date")
-//    private Instant createDate;
 
     @ManyToOne(optional = false)
     @NotNull
     private Task task;
-
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getType() {
         return type;
@@ -117,19 +100,6 @@ public class Resource  extends BaseEntity {
         this.unitType = unitType;
     }
 
-//    public Instant getCreateDate() {
-//        return createDate;
-//    }
-//
-//    public Resource createDate(Instant createDate) {
-//        this.createDate = createDate;
-//        return this;
-//    }
-//
-//    public void setCreateDate(Instant createDate) {
-//        this.createDate = createDate;
-//    }
-
     public Task getTask() {
         return task;
     }
@@ -142,7 +112,6 @@ public class Resource  extends BaseEntity {
     public void setTask(Task task) {
         this.task = task;
     }
-    // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

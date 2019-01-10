@@ -23,10 +23,6 @@ public class Task extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @NotNull
     @Size(min = 3)
     @Column(name = "name", nullable = false)
@@ -44,9 +40,6 @@ public class Task extends BaseEntity {
     @Column(name = "status", nullable = false)
     private TaskStatusEnum status;
 
-//    @Column(name = "create_date")
-//    private Instant createDate;
-
     @ManyToOne(optional = false)
     @NotNull
     private Project project;
@@ -57,14 +50,6 @@ public class Task extends BaseEntity {
                inverseJoinColumns = @JoinColumn(name="executors_id", referencedColumnName="id"))
     private Set<User> executors = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getName() {
         return name;
@@ -96,15 +81,6 @@ public class Task extends BaseEntity {
         return type;
     }
 
-//    public Task type(String type) {
-//        this.type = type;
-//        return this;
-//    }
-//
-//    public void setType(String type) {
-//        this.type = type;
-//    }
-
     public TaskStatusEnum getStatus() {
         return status;
     }
@@ -117,19 +93,6 @@ public class Task extends BaseEntity {
     public void setStatus(TaskStatusEnum status) {
         this.status = status;
     }
-
-//    public Instant getCreateDate() {
-//        return createDate;
-//    }
-//
-//    public Task createDate(Instant createDate) {
-//        this.createDate = createDate;
-//        return this;
-//    }
-//
-//    public void setCreateDate(Instant createDate) {
-//        this.createDate = createDate;
-//    }
 
     public Project getProject() {
         return project;

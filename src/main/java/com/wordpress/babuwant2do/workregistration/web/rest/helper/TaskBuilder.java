@@ -26,14 +26,9 @@ public class TaskBuilder {
         
         if(taskVM.getType() == TaskTypeEnum.INVOICABLE_CONTACT_BASED_TASK){
             ContactBasedInvoicableTask cTask = new ContactBasedInvoicableTask();
-            cTask.setQuantity(2f);
-            cTask.setPrice(3f);
+            cTask.setQuantity(taskVM.getQuantity());
+            cTask.setPrice(taskVM.getPrice());
             cTask.setUnit(UniteTypeEnum.PC);
-//            TODO: adjust following line
-//            cTask.setQuantity(taskVM.getQuantity());
-//            cTask.setPrice(taskVM.getPrice());
-//            cTask.setUnit(taskVM.getUnit());
-            
             task = cTask;
         }else if( taskVM.getType() == TaskTypeEnum.INVOICABLE_RESOURCE_BASED_TASK){
             ResourceBasedInvoicableTask rTask = new ResourceBasedInvoicableTask();

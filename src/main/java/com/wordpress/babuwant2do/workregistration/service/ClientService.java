@@ -2,7 +2,6 @@ package com.wordpress.babuwant2do.workregistration.service;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +65,6 @@ public class ClientService {
     @Transactional(readOnly = true)
     public Client findOne(Long id) {
         log.debug("Request to get Client : {}", id);
-//        Optional<Client> client = clientRepository.findById(id);
-//        if(client.isPresent()) return client.orElse(null);
         return clientRepository.findById(id).orElse(null);
     }
 

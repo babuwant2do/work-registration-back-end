@@ -6,9 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,14 +68,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public Project findOne(Long id) {
         log.debug("Request to get Project : {}", id);
-//        return projectRepository.findOne(id);
         return projectRepository.findById(id).orElse(null);
-        
-        //TODO: undo change
-//        Project project =  projectRepository.getOne(id);
-//        this.getProjectByLogin(project.getOwner().getLogin());
-//        
-//        return project;
     }
 
     /**
@@ -90,27 +81,17 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
     
-    //
     
     public List<Project> getProjectByLogin(String login){
     	List<Project> projects= this.projectRepository.findByOwner_Login(login);
-    	this.log.warn("Project List by Owner");			
-    	this.print(projects);
-    	
-//    	Pageable pageable = new PageRequest(pageIndex, pageSize, Direction.ASC, "user_login_id");
-    	Pageable pageable = PageRequest.of(0, 2);
-    	Page<Project> page = this.projectRepository.findByOwner_Login(login, pageable);
-    	this.log.warn("Project Page by Owner");
-    	this.print(page.getContent());
-    	
     	return projects;
     }
     
-    private void print(List<Project> projects){
-    	for (Project project : projects) {
-    		this.log.info(project.toString());			
-		}
-    }
+//    private void print(List<Project> projects){
+//    	for (Project project : projects) {
+//    		this.log.info(project.toString());			
+//		}
+//    }
     
     
 }

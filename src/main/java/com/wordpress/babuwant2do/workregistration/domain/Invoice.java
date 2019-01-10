@@ -3,7 +3,6 @@ package com.wordpress.babuwant2do.workregistration.domain;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,6 @@ public class Invoice extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
@@ -34,9 +29,6 @@ public class Invoice extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private InvoiceStatusEnum status;
-
-//    @Column(name = "create_date")
-//    private Instant createDate;
 
     @Column(name = "sent_date")
     private Instant sentDate;
@@ -59,16 +51,6 @@ public class Invoice extends BaseEntity {
     @OneToMany(mappedBy = "invoice", cascade=CascadeType.PERSIST)
     @JsonIgnore
     private List<InvoiceableTask> tasks = new ArrayList<>();
-
-
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getName() {
         return name;
@@ -95,19 +77,6 @@ public class Invoice extends BaseEntity {
     public void setStatus(InvoiceStatusEnum status) {
         this.status = status;
     }
-
-//    public Instant getCreateDate() {
-//        return createDate;
-//    }
-//
-//    public Invoice createDate(Instant createDate) {
-//        this.createDate = createDate;
-//        return this;
-//    }
-//
-//    public void setCreateDate(Instant createDate) {
-//        this.createDate = createDate;
-//    }
 
     public Instant getSentDate() {
         return sentDate;
@@ -162,8 +131,6 @@ public class Invoice extends BaseEntity {
     }
     
     
-    // jhipster-needle-entity-add-getters-setters - Jhipster will add getters and setters here, do not remove
-
     public List<InvoiceLine> getInvoiceLines() {
 		return invoiceLines;
 	}

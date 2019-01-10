@@ -16,10 +16,6 @@ public class InvoiceLine  extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @NotNull
     @Column(name = "details", nullable = false)
     private String details;
@@ -45,15 +41,6 @@ public class InvoiceLine  extends BaseEntity {
     @ManyToOne(optional = false)
     @NotNull
     private Invoice invoice;
-
-    // jhipster-needle-entity-add-field - Jhipster will add fields here, do not remove
- //    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getDetails() {
         return details;

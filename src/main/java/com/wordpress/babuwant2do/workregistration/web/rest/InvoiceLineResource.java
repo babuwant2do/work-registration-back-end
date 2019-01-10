@@ -3,16 +3,11 @@ package com.wordpress.babuwant2do.workregistration.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.apache.tomcat.util.http.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,11 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wordpress.babuwant2do.workregistration.domain.Client;
 import com.wordpress.babuwant2do.workregistration.domain.InvoiceLine;
 import com.wordpress.babuwant2do.workregistration.service.InvoiceLineService;
 import com.wordpress.babuwant2do.workregistration.web.rest.util.HeaderUtil;
-import com.wordpress.babuwant2do.workregistration.web.rest.util.PaginationUtil;
 
 /**
  * REST controller for managing InvoiceLine.
@@ -97,7 +90,6 @@ public class InvoiceLineResource {
     public ResponseEntity<List<InvoiceLine>> getAllInvoiceLines() {
         log.debug("REST request to get a page of InvoiceLines");
         List<InvoiceLine> page = invoiceLineService.findAll();
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoice-lines");
         return new ResponseEntity<>(page, null, HttpStatus.OK);
     }
 
@@ -111,7 +103,6 @@ public class InvoiceLineResource {
     public ResponseEntity<InvoiceLine> getInvoiceLine(@PathVariable Long id) {
         log.debug("REST request to get InvoiceLine : {}", id);
         InvoiceLine invoiceLine = invoiceLineService.findOne(id);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(invoiceLine));
         if(invoiceLine != null){
         	return new ResponseEntity<InvoiceLine>(invoiceLine, HttpStatus.OK);        	
         }

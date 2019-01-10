@@ -1,13 +1,12 @@
 package com.wordpress.babuwant2do.workregistration.web.rest;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +29,20 @@ public class AccountResource {
 		this.userService = userService;
 	}
 	
+	@GetMapping("/register/hello")
+	public ResponseEntity<String> hello(){
+		return new ResponseEntity<String>("Hello", HttpStatus.OK);
+	}
+
+	@PostMapping("/register/hello")
+	public ResponseEntity<String> helloBack(String name){
+		return new ResponseEntity<String>("Hello "+name, HttpStatus.OK);
+	}
 	
 	//TODO: handle Exception GLOBAL
 	@PostMapping(path = "/register",
-	        produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+	        produces={MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE}
+	)
     public ResponseEntity registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
 		HttpHeaders textPlainHeaders = new HttpHeaders();
         textPlainHeaders.setContentType(MediaType.TEXT_PLAIN);

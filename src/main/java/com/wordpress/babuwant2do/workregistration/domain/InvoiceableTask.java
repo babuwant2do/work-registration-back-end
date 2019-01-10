@@ -1,6 +1,5 @@
 package com.wordpress.babuwant2do.workregistration.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
