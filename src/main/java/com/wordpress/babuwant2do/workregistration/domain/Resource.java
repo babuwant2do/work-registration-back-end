@@ -31,7 +31,7 @@ public class Resource  extends BaseEntity {
     @Column(name = "unit_qty", nullable = false)
     private Float unitQty;
 
-    @NotNull
+//    @NotNull
     @Column(name = "unit_price", nullable = false)
     private Float unitPrice;
 

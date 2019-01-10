@@ -17,15 +17,16 @@ public class ResourceBuilder{
             WorkingHourResource workingHrResource = new WorkingHourResource();
             workingHrResource.setExecutionDate(resourceVM.getExecutionDate());
             workingHrResource.setUnitType(UniteTypeEnum.HOUR);
+            workingHrResource.setUnitPrice(15f);//TODO: must be task wise configuration, bt for now set static value
             resource = workingHrResource;
         }else{
             resource = new Resource();
             resource.setUnitType(UniteTypeEnum.PC);
+            resource.setUnitPrice(resourceVM.getUnitPrice());
         }
         
         resource.setDescription(resourceVM.getDescription());
         resource.setTask(resourceVM.getTask());
-        resource.setUnitPrice(resourceVM.getUnitPrice());
         resource.setUnitQty(resourceVM.getUnitQty());
         resource.setId(resourceVM.getId());
 
