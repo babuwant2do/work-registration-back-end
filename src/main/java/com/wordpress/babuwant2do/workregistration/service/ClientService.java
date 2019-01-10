@@ -1,6 +1,7 @@
 package com.wordpress.babuwant2do.workregistration.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -26,6 +27,21 @@ public class ClientService {
     private final ClientRepository clientRepository;
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
+        this.createInitDate();
+    }
+    
+    /**
+     * BAD code: temporary soln: 
+     * add initial data... I should use Spring batch.. bt.. for now.. :)
+     */
+    private void createInitDate(){
+    	if(this.clientRepository.count() <= 2 ){
+    		List<Client> cl = new ArrayList<>();
+    		for (int i = 0; i < 5; i++) {
+    			cl.add(new Client("Name "+i, "name"+i+"@abc.com", "phone no "+i, "Addesaa, city  , country - "+i));				
+			}
+    		this.clientRepository.saveAll(cl);
+    	} 
     }
 
     /**

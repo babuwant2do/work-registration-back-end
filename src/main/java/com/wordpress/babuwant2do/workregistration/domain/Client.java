@@ -15,9 +15,13 @@ public class Client extends BaseEntity implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
+    public Client(){}
+    public Client(String name, String email, String phone, String address){
+    	this.name = name;
+    	this.email = email;
+    	this.address = address;
+    	this.phone = phone;
+    }
 
     @NotNull
     @Column(name = "name", nullable = false)
